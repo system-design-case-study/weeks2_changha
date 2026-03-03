@@ -3,8 +3,26 @@ spring:
     name: weeks2_changha
 
 app:
+  socketio:
+    enabled: true
+    host: 0.0.0.0
+    port: 9092
+    origin: "*"
+    namespace: /location
+    redis:
+      enabled: false
+      address: redis://127.0.0.1:6379
+      database: 0
+      username:
+      password:
   backpressure:
     policy: DROP_OLDEST
     queue-capacity: 100
     drain-interval-millis: 10
     simulated-send-delay-millis: 0
+  friends:
+    relations:
+      user-a:
+        - user-b
+      user-b:
+        - user-a
