@@ -21,13 +21,24 @@ public class LocationWebSocketHandler extends TextWebSocketHandler {
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
-		sessionRegistry.register(session);
-		log.info("Location ws connected: sessionId={}, activeSessions={}", session.getId(), sessionRegistry.sessionCount());
+		try {
+			sessionRegistry.register(session);
+			log.info("Location ws connected: sessionId={}, activeSessions={}", session.getId(), sessionRegistry.sessionCount());
+		} catch (IllegalStateException ex) {
+			log.warn("Rejecting session {} due to missing user context", session.getId(), ex);
+			if (session.isOpen()) {
+				try {
+					session.close(CloseStatus.POLICY_VIOLATION);
+				} catch (Exception ignored) {
+					// best effort close
+				}
+			}
+		}
 	}
 
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) {
-		sessionRegistry.broadcastToOthers(session.getId(), message.getPayload());
+		sessionRegistry.broadcastToFriends(session.getId(), message.getPayload());
 	}
 
 	@Override
