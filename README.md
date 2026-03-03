@@ -43,22 +43,8 @@
 ## 주요 실험 결과
 아래 결과는 2026-03-03(Asia/Seoul) 로컬 실험 기준이다.
 
-### 1) realistic-location 기본 배치
-- 설정:
-  - `PROFILE=realistic-location`
-  - `PAYLOAD_BYTES=256`
-  - `PUBLISH_COUNT=10000`
-  - `TEST_BUFFER_LIMIT='normal 0 0 0 replica 256mb 64mb 60 pubsub 32mb 8mb 60'`
-  - `RUNS=5`
-- 결과:
-  - `disconnect=0/5`
-  - `peak omem=2,385,720`
-- 해석:
-  - 실서비스 근사 부하(10k burst)에서는 Redis pubsub output buffer 한계까지 가지 않음
-- 보고서:
-  - `specs/001-realtime-interview-tests/reports/redis-output-buffer-batch-20260303-161550.md`
 
-### 2) Hard limit 임계치 (`32mb`) 탐색
+### 1) Hard limit 임계치 (`32mb`) 탐색
 - 조건:
   - `PAYLOAD_BYTES=256`, `MONITOR_SECONDS=12`
   - `client-output-buffer-limit pubsub 32mb 8mb 60`
@@ -68,7 +54,7 @@
 - 결론:
   - 현재 환경 hard-limit 전이 구간은 `112k ~ 113k` messages
 
-### 3) Soft limit 임계치 (`8mb for 60s`) 탐색
+### 2) Soft limit 임계치 (`8mb for 60s`) 탐색
 - 조건:
   - `PAYLOAD_BYTES=256`, `MONITOR_SECONDS=70`, `SAMPLE_INTERVAL=1`
   - 동일 limit: `pubsub 32mb 8mb 60`
