@@ -10,7 +10,7 @@
 - `longitude`: 경도 (`-180 ~ 180`)
 - `timestamp`: 위치 측정 시각(권장: UTC epoch millis)
 
-블로그 작성 링크 : [시스템 설계2 - 2장](https://changha-dev.github.io/posts/system-architecture-2/)
+**블로그 작성 링크 : [시스템 설계2 - 2장](https://changha-dev.github.io/posts/system-architecture-2/)**
 
 위 블로그를 읽고 Redis pub/sub 과정에서 client에 보내기 위한 outputBuffer가 있다는 것을 알았습니다.  
 이 부분에 대한 buffer limit에서 어떻게 동작하는 지와 로컬에서 테스트했을 때 soft limit, hard limit의 임계점이 어느정도인지 파악해보았습니다.  
