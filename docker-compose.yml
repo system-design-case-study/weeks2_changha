@@ -1,0 +1,53 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: weeks2-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app1:
+    image: eclipse-temurin:21-jre
+    container_name: weeks2-app1
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "9092:9092"
+    volumes:
+      - ./build/libs:/app:ro
+    command: >
+      sh -c "java -jar /app/*.jar
+      --server.port=8080
+      --app.socketio.port=9092
+      --app.socketio.redis.enabled=true
+      --app.socketio.redis.address=redis://redis:6379"
+    environment:
+      JAVA_TOOL_OPTIONS: "-XX:+UseContainerSupport"
+
+  app2:
+    image: eclipse-temurin:21-jre
+    container_name: weeks2-app2
+    working_dir: /app
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+      - "9093:9093"
+    volumes:
+      - ./build/libs:/app:ro
+    command: >
+      sh -c "java -jar /app/*.jar
+      --server.port=8081
+      --app.socketio.port=9093
+      --app.socketio.redis.enabled=true
+      --app.socketio.redis.address=redis://redis:6379"
+    environment:
+      JAVA_TOOL_OPTIONS: "-XX:+UseContainerSupport"
