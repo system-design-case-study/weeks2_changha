@@ -73,6 +73,14 @@ Redis `client-output-buffer-limit`의 Pub/Sub 클라이언트 규칙이다.
 - hard: `32mb`를 한 번이라도 넘으면 즉시 끊김
 - soft: `8mb` 초과 상태가 `60초` 연속 유지되면 끊김
 
+## disconnect 판정/검증 방법
+스크립트는 아래 순서로 disconnect를 판정한다.
+
+1. 구독자 연결 직후 `CLIENT ID`를 조회해 추적 대상 id를 저장
+2. 샘플링 루프에서 `CLIENT LIST TYPE pubsub`를 조회하고, 해당 id 라인을 검색
+3. 해당 id 라인이 사라지면 `disconnected=true`로 판정 후 종료
+
+테스트 중 출력된 subscriber `client id`가 목록에서 사라졌는지 직접 확인하면 된다.
 
 ## 실행 방법
 사전 준비:
@@ -102,4 +110,3 @@ RUNS=5 \
 
 보고서 출력 경로:
 - `specs/001-realtime-interview-tests/reports/`
-
